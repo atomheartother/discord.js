@@ -170,7 +170,12 @@ class ShardingManager extends EventEmitter {
   async spawn(amount = this.totalShards, delay = 5500, spawnTimeout) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
-      amount = await Util.fetchRecommendedShards(this.token);
+      try {
+        amount = await Util.fetchRecommendedShards(this.token);
+        console.log(`Got amount to spawn: ${amount}`);
+      } catch(e) {
+        console.error(e);
+      }
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
@@ -204,7 +209,13 @@ class ShardingManager extends EventEmitter {
       const shard = this.createShard(shardID);
       promises.push(shard.spawn(spawnTimeout));
       if (delay > 0 && this.shards.size !== this.shardList.length) promises.push(Util.delayFor(delay));
-      await Promise.all(promises); // eslint-disable-line no-await-in-loop
+      try {
+        await Promise.all(promises); // eslint-disable-line no-await-in-loop
+      } catch (e) {
+        console.error(`Error spawning shard ${shardID}`);
+        console.error(e);
+        throw e;
+      }
     }
 
     return this.shards;
