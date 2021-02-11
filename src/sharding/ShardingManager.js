@@ -173,8 +173,12 @@ class ShardingManager extends EventEmitter {
       try {
         amount = await Util.fetchRecommendedShards(this.token);
         console.log(`Got amount to spawn: ${amount}`);
-      } catch(e) {
-        console.error(e);
+      } catch(res) {
+        console.error("Cannot spawn manager");
+        console.error(res);
+        const body = await res.json();
+        console.error(body);
+        throw res;
       }
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
