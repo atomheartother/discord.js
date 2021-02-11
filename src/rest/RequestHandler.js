@@ -140,7 +140,8 @@ class RequestHandler {
         this.manager.client.emit(
           'debug',
           `429 hit on route ${request.route} | ${this.retryAfter} idk if this ms or seconds`,
-        );
+          );
+          console.log(body);
         await Util.delayFor(this.retryAfter * (body?.message?.includes('You are being blocked') ? 1000 : 1));
         return this.execute(request);
       }
