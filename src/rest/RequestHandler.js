@@ -137,8 +137,11 @@ class RequestHandler {
       if (res.status === 429) {
         // A ratelimit was hit - this should never happen
         const body = await res.json();
-        this.manager.client.emit('debug', `429 hit on route ${request.route} | ${this.retryAfter} idk if this ms or seconds`);
-        await Util.delayFor(this.retryAfter * (body?.message?.includes("You are being blocked") ? 1000 : 1));
+        this.manager.client.emit(
+          'debug',
+          `429 hit on route ${request.route} | ${this.retryAfter} idk if this ms or seconds`,
+        );
+        await Util.delayFor(this.retryAfter * (body?.message?.includes('You are being blocked') ? 1000 : 1));
         return this.execute(request);
       }
 
