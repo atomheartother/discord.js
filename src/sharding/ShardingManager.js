@@ -178,6 +178,7 @@ class ShardingManager extends EventEmitter {
         console.error(res);
         const body = await res.json();
         console.error(body);
+        console.error(`Retry after: ${res.headers.get('retry-after')}`)
         throw res;
       }
     } else {
